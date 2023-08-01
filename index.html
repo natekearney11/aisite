@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat GPT API Demo</title>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-window" id="chat-window">
+            <!-- Chat messages will be displayed here -->
+        </div>
+        <input type="text" id="user-input" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        // JavaScript code to handle user interactions and API integration
+        function sendMessage() {
+            const userInput = document.getElementById("user-input").value;
+            appendMessage("user", userInput);
+
+            // Make an API request to Chat GPT API endpoint
+            const apiKey = "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";
+            // Replace API_ENDPOINT with the actual endpoint URL provided by the API
+            const apiEndpoint = "https://api.openai.com/v1/chat/completions";
+
+            // Use fetch or AJAX to send the user message to the API
+            fetch(apiEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    messages: [
+                        {
+                            role: "system",
+                            content: "You are a helpful assistant."
+                        },
+                        {
+                            role: "user",
+                            content: userInput
+                        }
+                    ]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseMessage = data.choices[0].message.content;
+                appendMessage("chatbot", responseMessage);
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function appendMessage(sender, message) {
+            const chatWindow = document.getElementById("chat-window");
+            const messageElement = document.createElement("div");
+            messageElement.className = `message ${sender}`;
+            messageElement.textContent = message;
+            chatWindow.appendChild(messageElement);
+        }
+    </script>
+</body>
+</html>
 
